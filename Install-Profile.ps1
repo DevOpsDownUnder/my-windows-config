@@ -31,17 +31,17 @@ function Install-Fonts {
 }
 #endregion
 
-try {
+<# try {
     git clone https://github.com/Sup3rlativ3/ps-menu.git .\ps-menu
     Import-Module .\ps-menu\ps-menu.psd1
 }
 catch {
     Write-Output "Failed to install the menu module."
-}
+} #>
 
 # Install some default apps
 try {
-    $Menu = @("PowerShell Core","Windows Terminal","7-Zip","VSCode","ShareX","Github CLI","None")
+    $Menu = @("PowerShell Core","Windows Terminal","7-Zip","VSCode","ShareX","Github CLI","Obsidian","None")
     $Msg = "Please choose which apps you would like to install"
     $Selected = New-Menu -MenuItems $Menu -Multiselect -Message $Msg
 
@@ -67,6 +67,14 @@ try {
         Write-Output "Installing VSCode"
         winget install --id=Microsoft.VisualStudioCode --exact --silent --accept-package-agreements --accept-source-agreements
         Write-Output "Successfully installed VSCode."
+
+        code --install-extension ms-vscode.powershell --force
+        code --install-extension eamodio.gitlens --force
+        code --install-extension github.vscode-pull-request-github --force
+        code --install-extension esbenp.prettier-vscode --force
+        code --install-extension azemoh.one-monokai --force
+        code --install-extension pkief.material-icon-theme --force
+        code --install-extension davidanson.vscode-markdownlint --force
     }
     
     if ($Selected -contains "ShareX") {
@@ -78,6 +86,11 @@ try {
         Write-Output "Installing Github CLI"
         winget install --id=Github.CLI --exact --silent --accept-package-agreements --accept-source-agreements
         Write-Output "Successfully installed Github CLI."
+    }
+    if ($Selected -contains "Obsidian") {
+        Write-Output "Installing Obsidian"
+        winget install --id=Obsidian.Obsidian --exact --silent --accept-package-agreements --accept-source-agreements
+        Write-Output "Successfully installed Obsidian."
     }
     
 }
