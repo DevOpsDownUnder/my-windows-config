@@ -31,13 +31,13 @@ function Install-Fonts {
 }
 #endregion
 
-<# try {
+try {
     git clone https://github.com/Sup3rlativ3/ps-menu.git .\ps-menu
     Import-Module .\ps-menu\ps-menu.psd1
 }
 catch {
     Write-Output "Failed to install the menu module."
-} #>
+}
 
 # Install some default apps
 try {
@@ -125,12 +125,17 @@ catch {
 
 # Copy settings & background images for terminal
 try {
+    
     $WinTermFolder = Get-ChildItem "$($Env:UserProfile)\appdata\local\packages" -Filter Microsoft.WindowsTerminal*
+    Copy-Item -Path .\Settings.json -Destination "$($WinTermFolder.FullName)\LocalState"
+    Copy-Item -Path .\SysOp.omp.json -Destination "$($WinTermFolder.FullName)\LocalState"
+
     $Images = Get-ChildItem -Filter *.png
     ForEach($Image in $Images) {
         Copy-Item -Path $Image.FullName -Destination "$($WinTermFolder.FullName)\roamingState"
     }
-    Copy-Item -Path .\Settings.json -Destination "$($WinTermFolder.FullName)\LocalState"
+    
+    
 }
 catch {
     Write-Output "Error copying images"
@@ -166,4 +171,14 @@ try {
 catch {
     Write-Output "Error copying the PowerShell profiles"
     Write-Output $Error[0]
+}
+
+
+try {
+    Write-Output "Installing Oh-My-Posh config"
+    oh-my-posh init pwsh --config 'C:\Config\SysOp.omp.json' | Invoke-Expression
+    oh-my-posh init pwsh --config 'C:\Config\SysOp.omp.json' | Invoke-Expression
+}
+catch {
+    <#Do this if a terminating exception happens#>
 }
